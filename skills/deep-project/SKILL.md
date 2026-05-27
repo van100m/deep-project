@@ -188,6 +188,35 @@ See [project-manifest.md](references/project-manifest.md) for manifest format.
 
 ---
 
+## Step 3.5: External Pro Review of the Decomposition
+
+**Goal:** Get a gpt-5.5-pro second opinion on the proposed split structure BEFORE
+presenting it to the user, then integrate worthwhile feedback. Runs inline after
+Step 3 (not a resume point).
+
+Run the pro review script:
+```bash
+uv run {plugin_root}/scripts/llm_clients/pro_review.py --planning-dir "{planning_dir}" --requirements "{initial_file}"
+```
+
+This sends `project-manifest.md` + the original requirements + interview to
+gpt-5.5-pro (OpenAI Responses API) and writes the critique to
+`{planning_dir}/reviews/pro-review.md`. The model reasons for a few minutes —
+this is expected.
+
+Parse the JSON output:
+- **`success == true`:** Read `{planning_dir}/reviews/pro-review.md`. You are the
+  authority on what to integrate — apply the genuinely useful critique (re-sizing
+  splits, fixing dependency order, filling scope gaps) directly to
+  `project-manifest.md`. It is fine to reject suggestions you disagree with; note
+  briefly what you changed and why.
+- **`success == false`:** The review is advisory and non-blocking. If the error is
+  a missing key (`OPENAI_API_KEY not set`), tell the user pro review was skipped
+  (key not configured) and continue. For other errors, surface the error and
+  continue to Step 4.
+
+---
+
 ## Step 4: User Confirmation
 
 **Goal:** Get user approval on split structure.
