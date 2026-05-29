@@ -196,7 +196,7 @@ Step 3 (not a resume point).
 
 Run the pro review script:
 ```bash
-uv run {plugin_root}/scripts/llm_clients/pro_review.py --planning-dir "{planning_dir}" --requirements "{initial_file}"
+uv run --directory {plugin_root} scripts/llm_clients/pro_review.py --planning-dir "{planning_dir}" --requirements "{initial_file}"
 ```
 
 This sends `project-manifest.md` + the original requirements + interview to
